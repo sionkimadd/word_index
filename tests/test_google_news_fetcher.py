@@ -15,21 +15,21 @@ class TestGoogleNewsFetcher(unittest.TestCase):
 
     def test_init_valid(self):
         google_news_fetcher = GoogleNewsFetcher("nasdaq", 7, "nasdaq.csv")
-        self.assertEqual("nasdaq", google_news_fetcher._GoogleNewsFetcher__search_word)
-        self.assertEqual(7, google_news_fetcher._GoogleNewsFetcher__days_back)
-        self.assertEqual("nasdaq.csv", google_news_fetcher._GoogleNewsFetcher__output_csv)
+        self.assertEqual("nasdaq", google_news_fetcher.search_word)
+        self.assertEqual(7, google_news_fetcher.days_back)
+        self.assertEqual("nasdaq.csv", google_news_fetcher.output_csv)
 
     def test_init_empty_search_word(self):
         google_news_fetcher = GoogleNewsFetcher(" ", 7, "nasdaq.csv")
-        self.assertEqual(google_news_fetcher._GoogleNewsFetcher__search_word, " ")
+        self.assertEqual(google_news_fetcher.search_word, " ")
 
     def test_init_empty_days_back(self):
         google_news_fetcher = GoogleNewsFetcher("nasdaq", " ", "nasdaq.csv")
-        self.assertEqual(google_news_fetcher._GoogleNewsFetcher__days_back, " ")
+        self.assertEqual(google_news_fetcher.days_back, " ")
 
     def test_init_empty_csv_file(self):
         google_news_fetcher = GoogleNewsFetcher("nasdaq", 7, " ")
-        self.assertEqual(google_news_fetcher._GoogleNewsFetcher__output_csv, " ")
+        self.assertEqual(google_news_fetcher.output_csv, " ")
 
     def test_setup_period(self):
         google_news_fetcher = GoogleNewsFetcher("nasdaq", 7, None)

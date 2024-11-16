@@ -45,12 +45,12 @@ class GoogleNewsFetcher:
             existing_news_data = pd.read_csv(self.__output_csv)
             existing_news_data["datetime"] = pd.to_datetime(existing_news_data["datetime"], errors = "coerce")
             combined_news_data = pd.concat([existing_news_data, news_data], ignore_index = True)
-            combined_news_data = combined_news_data.drop_duplicates(subset = ["title"], keep = "last")
-            combined_news_data = combined_news_data.dropna(subset = ["datetime"])
-            combined_news_data = combined_news_data.sort_values("datetime")
+            combined_news_data.drop_duplicates(subset = ["title"], keep = "last", inplace=True)
+            combined_news_data.dropna(subset = ["datetime"], inplace=True)
+            combined_news_data.sort_values("datetime", inplace=True)
         
         else:
-            news_data = news_data.dropna(subset=["datetime"])
+            news_data.dropna(subset=["datetime"], inplace=True)
             combined_news_data = news_data.sort_values("datetime")
 
         combined_news_data.to_csv(self.__output_csv, index = False)
