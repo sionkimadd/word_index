@@ -6,6 +6,7 @@
 
 1. Fetch Google news (O)
 2. Save to Database (O)
+3. Load data from Database (O)
 3. Analyze news ( )
 4. Deploy ( )
 
@@ -193,6 +194,62 @@ def output_csv(self):
 @property
 def table_name(self):
     return self.__table_name
+
+@property
+def engine(self):
+    return self.__engine
+```
+- `@property` provide read-only access to private attributes.
+
+### SQLtoCSV (Class)
+```python
+import pandas as pd
+from sqlalchemy import create_engine
+import os
+from dotenv import load_dotenv
+```
+```python
+class SQLtoCSV:
+```
+```python
+def __init__(self, output_sql_csv, search_word):
+
+    load_dotenv()
+    self.__output_sql_csv = output_sql_csv
+    self.__search_word = search_word
+    self.__table_name = "word_index"
+    self.__db_url = os.getenv("JAWSDB_URL").replace("mysql://", "mysql+pymysql://")
+    self.__engine = create_engine(self.__db_url)
+```
+- `load_dotenv()` load the environment variables from `.env`.
+- Initialize `SQLtoCSV` with `output_sql_csv` and `search_word`.
+- `self.__table_name = "word_index"` set the table name with `word_index`.
+- `self.__db_url = os.getenv("JAWSDB_URL").replace("mysql://", "mysql+pymysql://")` retrieve the `JAWSDB_URL` from the environment variables and reformat it to be compatible with `SQLAlchemy`.
+- `self.__engine = create_engine(self.__db_url)` create a database engine to connect with the specified database.
+
+```python
+def load_to_csv(self):
+
+    query = f"SELECT * FROM {self.__table_name} WHERE search_word = '{self.__search_word}'"
+    data = pd.read_sql(query, self.__engine)
+    data.to_csv(self.__output_sql_csv, index=False)
+```
+- `query = f"SELECT * FROM {self.__table_name} WHERE search_word = '{self.__search_word}'"` define a `SQL query` to retrieve a `word_index` that contains an only specified `search_word` column.
+- `data = pd.read_sql(query, self.__engine)` read data from the database table into a Pandas DataFrame.
+- `data.to_csv(self.__output_sql_csv, index=False)` save Pandas DataFrame to a CSV file without the index.
+
+```python
+@property
+def output_sql_csv(self):
+    return self.__output_sql_csv
+
+@property
+def table_name(self):
+    return self.__table_name
+
+@property
+def search_word(self):
+    return self.__search_word
 
 @property
 def engine(self):

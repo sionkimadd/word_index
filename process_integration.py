@@ -1,5 +1,6 @@
 from csv_to_sql.csv_to_sql import CSVtoSQL
 from google_news_fetcher.google_news_fetcher import GoogleNewsFetcher
+from sql_to_csv.sql_to_csv import SQLtoCSV
 
 def fetch_google_news(search_word, days_back):
     output_csv = f"{search_word}.csv"
@@ -13,3 +14,9 @@ def save_database(output_csv):
     csv_to_sql = CSVtoSQL(output_csv)
     csv_to_sql.create_table_if_not_exists()
     csv_to_sql.save_as_sql()
+
+def database_to_csv(search_word):
+    output_sql_csv = f"{search_word}_sql.csv"
+    sql_to_csv = SQLtoCSV(output_sql_csv, search_word)
+    sql_to_csv.load_to_csv()
+    return output_sql_csv
