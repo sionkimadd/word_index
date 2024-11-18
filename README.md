@@ -257,4 +257,40 @@ def engine(self):
 ```
 - `@property` provide read-only access to private attributes.
 
+### sortCSV (Class)
+```python
+import pandas as pd
+```
+```python
+class sortCSV:
+```
+```python
+def __init__(self, output_sql_csv):
+    
+    self.__output_sql_csv = output_sql_csv
+```
+- Initialize `sortCSV` with `output_sql_csv`.
+
+```python
+def sort_csv_datetime(self):
+
+    df = pd.read_csv(self.__output_sql_csv)
+
+    df['datetime'] = pd.to_datetime(df['datetime'])
+    sorted_df = df.sort_values(by='datetime')
+
+    sorted_df.to_csv(self.__output_sql_csv, index=False)
+```
+- `df = pd.read_csv(self.__output_sql_csv)` read the existing CSV file into a Pandas DataFrame.
+- `df['datetime'] = pd.to_datetime(df['datetime'])` convert `datatime` column into date and time value.
+- `sorted_df = df.sort_values(by='datetime')` sort Pandas DataFrame in ascending order by `datetime` column.
+- `sorted_df.to_csv(self.__output_sql_csv, index=False)` save sorted Pandas DataFrame to a CSV file without the index.
+
+```python
+@property
+def output_sql_csv(self):
+    return self.__output_sql_csv
+```
+- `@property` provide read-only access to private attributes.
+
 ### ??? (Class)

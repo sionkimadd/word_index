@@ -16,7 +16,7 @@ class TestCSVtoSQL(unittest.TestCase):
         self.test_csv = "test_data.csv"
         self.test_data = pd.DataFrame({
             "title": ["Test 1", "Test 2", "Test 3"],
-            "datetime": ["1999-08-30", "1999-08-30", "1999-08-30"],
+            "datetime": ["2000-08-30", "1999-08-30", "1998-08-30"],
             "link": ["http://example.com/", "http://example.com/", "http://example.com/"],
             "search_word": ["kimsion", "kimsion", "kimsion"]
         })
