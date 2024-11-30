@@ -1,4 +1,5 @@
 from csv_to_sql.csv_to_sql import CSVtoSQL
+from datetime_column_inserter.datetime_column_inserter import datetimeColInserter
 from google_news_fetcher.google_news_fetcher import GoogleNewsFetcher
 from sentiment_analyzer.sentiment_analyzer import SentimentAnalysis
 from sort_csv.sort_csv import sortCSV
@@ -32,4 +33,9 @@ def analyze_sentiment_nltk(output_sql_csv):
     output_sentiment_csv = output_sql_csv.replace('sql.csv', 'sentiment.csv')
     sentiment_analysis = SentimentAnalysis(output_sql_csv, output_sentiment_csv)
     sentiment_analysis.analyze_sentiment()
+    return output_sentiment_csv
+
+def insert_datetime(output_sql_csv, output_sentiment_csv):
+    datetime_insert = datetimeColInserter(output_sql_csv, output_sentiment_csv)
+    datetime_insert.insert_column('datetime', 'compound', output_sentiment_csv)
     return output_sentiment_csv

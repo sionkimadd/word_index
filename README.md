@@ -383,4 +383,50 @@ def output_sentiment_csv(self):
 
 - `@property` provide read-only access to private attributes.
 
+### datetimeColInserter (Class)
+
+```python
+import pandas as pd
+```
+
+```python
+class datetimeColInserter:
+```
+
+```python
+def __init__(self, output_sql_csv, output_sentiment_csv):
+    self.__output_sql_csv = output_sql_csv
+    self.__output_sentiment_csv = output_sentiment_csv
+```
+
+- Initialize `datetimeColInserter` with `output_sql_csv`, and `output_sentiment_csv`.
+
+```python
+def insert_column(self, datetime_col, compound_col, output_sentiment_csv):
+
+    source = pd.read_csv(self.__output_sql_csv)
+    target = pd.read_csv(self.__output_sentiment_csv)
+
+    insert_position = target.columns.get_loc(compound_col) + 1
+    target.insert(insert_position, datetime_col, source[datetime_col])
+    target.to_csv(output_sentiment_csv, index=False)
+```
+
+- `source = pd.read_csv(self.__output_sql_csv)`, and `target = pd.read_csv(self.__output_sentiment_csv)` read `self.__output_sql_csv`, and `self.__output_sentiment_csv` into a Pandas DataFram.
+- `insert_position = target.columns.get_loc(compound_col) + 1` define insert position after `compound` column in `target`.
+- `target.insert(insert_position, datetime_col, source[datetime_col])` insert `source[datetime_col]` at `insert_position` as `datetime_col` name in `target`.
+- `target.to_csv(output_sentiment_csv, index=False)` save `target` as `csv` without index.
+
+```python
+@property
+def output_sql_csv(self):
+    return self.__output_sql_csv
+
+@property
+def output_sentiment_csv(self):
+    return self.__output_sentiment_csv
+```
+
+- `@property` provide read-only access to private attributes.
+
 ### ??? (Class)
