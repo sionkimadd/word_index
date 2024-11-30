@@ -39,3 +39,9 @@ def insert_datetime(output_sql_csv, output_sentiment_csv):
     datetime_insert = datetimeColInserter(output_sql_csv, output_sentiment_csv)
     datetime_insert.insert_column('datetime', 'compound', output_sentiment_csv)
     return output_sentiment_csv
+
+def insert_compound(output_sentiment_csv, output_sql_csv):
+    output_info_csv = output_sql_csv.replace('sql.csv', 'info.csv')
+    datetime_insert = datetimeColInserter(output_sentiment_csv, output_info_csv)
+    datetime_insert.insert_column('compound', 'search_word', output_info_csv)
+    return output_info_csv

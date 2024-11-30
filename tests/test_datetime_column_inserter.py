@@ -16,11 +16,11 @@ class TestdatetimeColInserter(unittest.TestCase):
     def setUp(self):
         self.output_sql_csv = "kimsion_sql.csv"
         self.output_sentiment_csv = "kimsion_sentiment.csv"
-        self.sentiment_analysis = datetimeColInserter(self.output_sql_csv, self.output_sentiment_csv)
+        self.datetime_col_inseter = datetimeColInserter(self.output_sql_csv, self.output_sentiment_csv)
 
     def test_insert_column(self):
 
-        self.sentiment_analysis.insert_column("datetime", "compound", "kimsion_sentiment.csv")
+        self.datetime_col_inseter.insert_column("datetime", "compound", "kimsion_sentiment.csv")
         df = pd.read_csv(self.output_sentiment_csv)
         header = df.columns.tolist()
         expected_header = ['neg', 'neu', 'pos', 'compound', 'datetime']

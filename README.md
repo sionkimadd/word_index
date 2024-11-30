@@ -429,4 +429,51 @@ def output_sentiment_csv(self):
 
 - `@property` provide read-only access to private attributes.
 
+### compoundColInserter (Class)
+
+```python
+import pandas as pd
+```
+
+```python
+class compoundColInserter:
+```
+
+```python
+def __init__(self, output_sentiment_csv, output_sql_csv):
+
+    self.__output_sentiment_csv = output_sentiment_csv
+    self.__output_sql_csv = output_sql_csv
+```
+
+- Initialize `compoundColInserter` with `output_sentiment_csv`, and `output_sql_csv`.
+
+```python
+def insert_column(self, compound_col, search_word_col, output_info_csv):
+
+    source = pd.read_csv(self.__output_sentiment_csv)
+    target = pd.read_csv(self.__output_sql_csv)
+
+    insert_position = target.columns.get_loc(search_word_col) + 1
+    target.insert(insert_position, compound_col, source[compound_col])
+    target.to_csv(output_info_csv, index=False)
+```
+
+- `source = pd.read_csv(self.__output_sentiment_csv)`, and `target = pd.read_csv(self.__output_sql_csv)` read `self.__output_sentiment_csv`, and `self.__output_sql_csv` into a Pandas DataFram.
+- `insert_position = target.columns.get_loc(search_word_col) + 1` define insert position after `search_word` column in `target`.
+- `target.insert(insert_position, compound_col, source[compound_col])` insert `source[compound_col]` at `insert_position` as `compound_col` name in `target`.
+- `target.to_csv(output_info_csv, index=False)` save `target` as `csv` without index.
+
+```python
+@property
+def output_sentiment_csv(self):
+    return self.__output_sentiment_csv
+
+@property
+def output_sql_csv(self):
+    return self.__output_sql_csv
+```
+
+- `@property` provide read-only access to private attributes.
+
 ### ??? (Class)
