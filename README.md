@@ -7,28 +7,32 @@
 1. Fetch Google news (O)
 2. Save to Database (O)
 3. Load data from Database (O)
-3. Analyze news ( )
-4. Deploy ( )
+4. Analyze news ( )
+5. Deploy ( )
 
 ## Implementation Details
 
 ### GoogleNewsFetcher (Class)
+
 ```python
 import os
 from datetime import datetime, timedelta
 import pandas as pd
 from GoogleNews import GoogleNews
 ```
+
 ```python
 class GoogleNewsFetcher:
 ```
+
 ```python
 def __init__(self, search_word, days_back, output_csv):
-    
+
     self.__search_word = search_word
     self.__days_back = days_back
     self.__output_csv = output_csv
 ```
+
 - Initialize `GoogleNewsFetcher` with `search_word`, `days_back`, and `output_csv`.
 
 ```python
@@ -39,6 +43,7 @@ def setup_period(self):
     self.__start_date_str  = start_date.strftime("%m/%d/%Y")
     self.__end_date_str = today.strftime("%m/%d/%Y")
 ```
+
 - `today = datetime.now().date()` get current date without time for following `GoogleNews` requirements.
 - `start_date = today - timedelta(days = self.__days_back)` calculate start date by subtracting `days_back` from today's date.
 - `self.__end_date_str = today.strftime("%m/%d/%Y")`, `self.__end_date_str = today.strftime("%m/%d/%Y")` format `MM/DD/YYYY` that is required by `GoogleNews`.
@@ -53,12 +58,13 @@ def fetch_news(self):
 
         if not self.__fetched_list:
             raise Exception(f"Error for {self.__search_word}.")
-    
+
     except Exception as e:
         raise e
-    
+
     return self.__fetched_list
 ```
+
 - `g_news = GoogleNews(start = self.__start_date_str , end = self.__end_date_str)` initialize `GoogleNews` with the specified date range.
 - `g_news.get_news(self.__search_word)` fetch news with a specific `search_word`.
 - `self.__fetched_list = g_news.results()` save fetched news as a list.
@@ -81,13 +87,14 @@ def save_as_csv(self):
         combined_news_data.drop_duplicates(subset = ["title"], keep = "last", inplace=True)
         combined_news_data.dropna(subset = ["datetime"], inplace=True)
         combined_news_data.sort_values("datetime", inplace=True)
-    
+
     else:
         news_data.dropna(subset=["datetime"], inplace=True)
         combined_news_data = news_data.sort_values("datetime")
 
     combined_news_data.to_csv(self.__output_csv, index = False)
 ```
+
 - `news_data = pd.DataFrame(self.__fetched_list)[["title", "datetime", "link"]]` convert a `fetched_list` (dictionaries) into a Pandas DataFrame with `title`, `datetime`, and `link` columns.
 - `news_data = news_data.assign(datetime = pd.to_datetime(news_data["datetime"], errors="coerce"), search_word=self.__search_word)` convert `datetime` column to a datetime format for replacing invalid values with `NaT` and add a `search_word` column.
 - `if os.path.exists(self.__output_csv):` check if CSV file already exist.
@@ -127,18 +134,22 @@ def end_date_str(self):
 def fetched_list(self):
     return self.__fetched_list
 ```
+
 - `@property` provide read-only access to private attributes.
 
 ### CSVtoSQL (Class)
+
 ```python
 import pandas as pd
 from sqlalchemy import create_engine, text
 import os
 from dotenv import load_dotenv
 ```
+
 ```python
 class CSVtoSQL:
 ```
+
 ```python
 def __init__(self, output_csv):
 
@@ -148,6 +159,7 @@ def __init__(self, output_csv):
     self.__db_url = os.getenv("JAWSDB_URL").replace("mysql://", "mysql+pymysql://")
     self.__engine = create_engine(self.__db_url)
 ```
+
 - `load_dotenv()` load the environment variables from `.env`.
 - Initialize `CSVtoSQL` with `output_csv`.
 - `self.__table_name = "word_index"` set the table name with `word_index`.
@@ -168,6 +180,7 @@ def create_table_if_not_exists(self):
     with self.__engine.connect() as connection:
         connection.execute(text(query))
 ```
+
 - `query = f"""CREATE TABLE IF NOT EXISTS {self__table_name} (title TEXT,datetime TEXT,link TEXT,search_word TEXT);"""` define a `SQL query` to create a table if not exists with `title`, `datetime`, `link`, and `search_word` columns.
 - `with self.__engine.connect() as connection:connection.execute(text(query))` connect with database and execute the `SQL query` to create the table.
 
@@ -180,10 +193,11 @@ def save_as_sql(self):
     combined_data.drop_duplicates(subset=['title'], keep = "last", inplace=True)
     combined_data.to_sql(self.__table_name, con=self.__engine, index=False, if_exists='replace')
 ```
+
 - `new_data = pd.read_csv(self.__output_csv)` read CSV file into a Pandas DataFrame.
 - `existing_data = pd.read_sql(f"SELECT * FROM {self.__table_name}", self.__engine)` read existing data from the database table into a Pandas DataFrame.
-- `combined_data = pd.concat([existing_data, new_data])` concatenate `existing_data` and `new_data` into a single Pandas DataFrame. 
-- `combined_data.drop_duplicates(subset=['title'], keep = "last", inplace=True)` remove duplicated news by `title` column for keeping last data. 
+- `combined_data = pd.concat([existing_data, new_data])` concatenate `existing_data` and `new_data` into a single Pandas DataFrame.
+- `combined_data.drop_duplicates(subset=['title'], keep = "last", inplace=True)` remove duplicated news by `title` column for keeping last data.
 - `combined_data.to_sql(self.__table_name, con=self.__engine, index=False, if_exists='replace')` save combined data into database table.
 
 ```python
@@ -199,18 +213,22 @@ def table_name(self):
 def engine(self):
     return self.__engine
 ```
+
 - `@property` provide read-only access to private attributes.
 
 ### SQLtoCSV (Class)
+
 ```python
 import pandas as pd
 from sqlalchemy import create_engine
 import os
 from dotenv import load_dotenv
 ```
+
 ```python
 class SQLtoCSV:
 ```
+
 ```python
 def __init__(self, output_sql_csv, search_word):
 
@@ -221,6 +239,7 @@ def __init__(self, output_sql_csv, search_word):
     self.__db_url = os.getenv("JAWSDB_URL").replace("mysql://", "mysql+pymysql://")
     self.__engine = create_engine(self.__db_url)
 ```
+
 - `load_dotenv()` load the environment variables from `.env`.
 - Initialize `SQLtoCSV` with `output_sql_csv` and `search_word`.
 - `self.__table_name = "word_index"` set the table name with `word_index`.
@@ -234,6 +253,7 @@ def load_to_csv(self):
     data = pd.read_sql(query, self.__engine)
     data.to_csv(self.__output_sql_csv, index=False)
 ```
+
 - `query = f"SELECT * FROM {self.__table_name} WHERE search_word = '{self.__search_word}'"` define a `SQL query` to retrieve a `word_index` that contains an only specified `search_word` column.
 - `data = pd.read_sql(query, self.__engine)` read data from the database table into a Pandas DataFrame.
 - `data.to_csv(self.__output_sql_csv, index=False)` save Pandas DataFrame to a CSV file without the index.
@@ -255,20 +275,25 @@ def search_word(self):
 def engine(self):
     return self.__engine
 ```
+
 - `@property` provide read-only access to private attributes.
 
 ### sortCSV (Class)
+
 ```python
 import pandas as pd
 ```
+
 ```python
 class sortCSV:
 ```
+
 ```python
 def __init__(self, output_sql_csv):
-    
+
     self.__output_sql_csv = output_sql_csv
 ```
+
 - Initialize `sortCSV` with `output_sql_csv`.
 
 ```python
@@ -281,6 +306,7 @@ def sort_csv_datetime(self):
 
     sorted_df.to_csv(self.__output_sql_csv, index=False)
 ```
+
 - `df = pd.read_csv(self.__output_sql_csv)` read the existing CSV file into a Pandas DataFrame.
 - `df['datetime'] = pd.to_datetime(df['datetime'])` convert `datatime` column into date and time value.
 - `sorted_df = df.sort_values(by='datetime')` sort Pandas DataFrame in ascending order by `datetime` column.
@@ -291,6 +317,70 @@ def sort_csv_datetime(self):
 def output_sql_csv(self):
     return self.__output_sql_csv
 ```
+
+- `@property` provide read-only access to private attributes.
+
+### SentimentAnalysis (Class)
+
+```python
+from nltk.sentiment import SentimentIntensityAnalyzer
+import pandas as pd
+```
+
+```python
+class SentimentAnalysis:
+```
+
+```python
+def __init__(self, output_sql_csv, output_sentiment_csv):
+    self.__output_sql_csv = output_sql_csv
+    self.__output_sentiment_csv = output_sentiment_csv
+    self.analyzer = SentimentIntensityAnalyzer()
+```
+
+- Initialize `SentimentAnalysis` with `output_sql_csv`, `output_sentiment_csv`, and `SentimentIntensityAnalyzer()`
+
+```python
+def analyze_sentiment(self):
+
+    df = pd.read_csv(self.__output_sql_csv)
+
+    sentiment_results = []
+
+    for title in df['title']:
+
+        sentiment_scores = self.analyzer.polarity_scores(title)
+
+        sentiment_results.append({
+            'neg': sentiment_scores['neg'],
+            'neu': sentiment_scores['neu'],
+            'pos': sentiment_scores['pos'],
+            'compound': sentiment_scores['compound']
+        })
+
+    sentiment_df = pd.DataFrame(sentiment_results)
+
+    sentiment_df.to_csv(self.__output_sentiment_csv, index=False, encoding='utf-8')
+```
+
+- `df = pd.read_csv(self.__output_sql_csv)` read the existing CSV file into a Pandas DataFrame.
+- `sentiment_results = []` initialize with empty `list` that is for sentiment results.
+- `for title in df['title']:` literate `title` from DataFrame.
+- `sentiment_scores = self.analyzer.polarity_scores(title)` analyze sentiment.
+- `sentiment_results.append({ 'neg': sentiment_scores['neg'], 'neu': sentiment_scores['neu'], 'pos': sentiment_scores['pos'], 'compound': sentiment_scores['compound'] })` create as a `dictionary` and append into `list`.
+- `sentiment_df = pd.DataFrame(sentiment_results)` convert `sentiment_results` into a Pandas DataFrame with `neg`, `neu`, `pos`, and `compound` columns.
+- `sentiment_df.to_csv(self.__output_sentiment_csv, index=False, encoding='utf-8')` save Pandas DataFrame as a `csv` without `index`.
+
+```python
+@property
+def output_sql_csv(self):
+    return self.__output_sql_csv
+
+@property
+def output_sentiment_csv(self):
+    return self.__output_sentiment_csv
+```
+
 - `@property` provide read-only access to private attributes.
 
 ### ??? (Class)

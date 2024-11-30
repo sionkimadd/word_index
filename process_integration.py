@@ -1,5 +1,7 @@
 from csv_to_sql.csv_to_sql import CSVtoSQL
 from google_news_fetcher.google_news_fetcher import GoogleNewsFetcher
+from sentiment_analyzer.sentiment_analyzer import SentimentAnalysis
+from sort_csv.sort_csv import sortCSV
 from sql_to_csv.sql_to_csv import SQLtoCSV
 
 def fetch_google_news(search_word, days_back):
@@ -20,3 +22,14 @@ def database_to_csv(search_word):
     sql_to_csv = SQLtoCSV(output_sql_csv, search_word)
     sql_to_csv.load_to_csv()
     return output_sql_csv
+
+def sort_csv_by_datetime(output_sql_csv):
+    sort_csv = sortCSV(output_sql_csv)
+    sort_csv.sort_csv_datetime()
+    return output_sql_csv
+
+def analyze_sentiment_nltk(output_sql_csv):
+    output_sentiment_csv = output_sql_csv.replace('sql.csv', 'sentiment.csv')
+    sentiment_analysis = SentimentAnalysis(output_sql_csv, output_sentiment_csv)
+    sentiment_analysis.analyze_sentiment()
+    return output_sentiment_csv
