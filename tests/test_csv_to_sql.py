@@ -1,6 +1,7 @@
 """
 python -m unittest tests/test_csv_to_sql.py
 """
+import os
 import unittest
 import pandas as pd
 from csv_to_sql.csv_to_sql import CSVtoSQL
@@ -8,6 +9,10 @@ from sqlalchemy import text
 
 class TestCSVtoSQL(unittest.TestCase):
 
+    def tearDown(self):
+        if os.path.exists("test_data.csv"):
+            os.remove("test_data.csv")
+            
     def test_init_valid(self):
         csv_to_sql = CSVtoSQL("nasdaq.csv")
         self.assertEqual("nasdaq.csv", csv_to_sql.output_csv)
@@ -15,7 +20,7 @@ class TestCSVtoSQL(unittest.TestCase):
     def setUp(self):
         self.test_csv = "test_data.csv"
         self.test_data = pd.DataFrame({
-            "title": ["Test 1", "Test 2", "Test 3"],
+            "title": ["Happy Test 1", "Sad Test 2", "Angry Test 3"],
             "datetime": ["2000-08-30", "1999-08-30", "1998-08-30"],
             "link": ["http://example.com/", "http://example.com/", "http://example.com/"],
             "search_word": ["kimsion", "kimsion", "kimsion"]

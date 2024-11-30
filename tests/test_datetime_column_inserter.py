@@ -9,9 +9,9 @@ class TestdatetimeColInserter(unittest.TestCase):
 
     def test_init_valid(self):
 
-        datetime_inserter = datetimeColInserter("kimsion_sql.csv", "kimsion_sentiment.csv")
-        self.assertEqual("kimsion_sql.csv", datetime_inserter.output_sql_csv)
-        self.assertEqual( "kimsion_sentiment.csv", datetime_inserter.output_sentiment_csv)
+        datetime_inserter = datetimeColInserter("nasdaq_sql.csv", "nasdaq_sentiment.csv")
+        self.assertEqual("nasdaq_sql.csv", datetime_inserter.output_sql_csv)
+        self.assertEqual( "nasdaq_sentiment.csv", datetime_inserter.output_sentiment_csv)
 
     def setUp(self):
         self.output_sql_csv = "kimsion_sql.csv"

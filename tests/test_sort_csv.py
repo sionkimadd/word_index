@@ -19,7 +19,7 @@ class TestsortCSV(unittest.TestCase):
         self.sort_csv.sort_csv_datetime()
         sorted_df = pd.read_csv(self.test_output_sql_csv)
         expected_df = pd.DataFrame({
-            "title": ["Test 3", "Test 2", "Test 1"],
+            "title": ["Angry Test 3", "Sad Test 2", "Happy Test 1"],
             "datetime": ["1998-08-30", "1999-08-30", "2000-08-30"],
             "link": ["http://example.com/", "http://example.com/", "http://example.com/"],
             "search_word": ["kimsion", "kimsion", "kimsion"]

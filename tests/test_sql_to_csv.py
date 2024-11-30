@@ -21,7 +21,7 @@ class TestSQLtoCSV(unittest.TestCase):
         self.csv_to_sql.load_to_csv()
         sql_df = pd.read_csv(self.test_output_sql_csv)
         expected_df = pd.DataFrame({
-            "title": ["Test 1", "Test 2", "Test 3"],
+            "title": ["Happy Test 1", "Sad Test 2", "Angry Test 3"],
             "datetime": ["2000-08-30", "1999-08-30", "1998-08-30"],
             "link": ["http://example.com/", "http://example.com/", "http://example.com/"],
             "search_word": ["kimsion", "kimsion", "kimsion"]
