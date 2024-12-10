@@ -2,6 +2,7 @@ from csv_to_sql.csv_to_sql import CSVtoSQL
 from datetime_column_inserter.datetime_column_inserter import datetimeColInserter
 from google_news_fetcher.google_news_fetcher import GoogleNewsFetcher
 from sentiment_analyzer.sentiment_analyzer import SentimentAnalysis
+from sentiment_plotter.sentiment_plotter import SentimentPlotter
 from sort_csv.sort_csv import sortCSV
 from sql_to_csv.sql_to_csv import SQLtoCSV
 
@@ -45,3 +46,7 @@ def insert_compound(output_sentiment_csv, output_sql_csv):
     datetime_insert = datetimeColInserter(output_sentiment_csv, output_info_csv)
     datetime_insert.insert_column('compound', 'search_word', output_info_csv)
     return output_info_csv
+
+def plotter_sentiment_nltk(search_word, output_sentiment_csv):
+    plotter = SentimentPlotter(output_sentiment_csv)
+    plotter.plot_sentiment(search_word)
