@@ -560,5 +560,3 @@ def filtered_data(self):
 ```
 
 - `@property` provide read-only access to private attributes.
-
-### ??? (Class)

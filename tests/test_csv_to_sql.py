@@ -4,7 +4,7 @@ python -m unittest tests/test_csv_to_sql.py
 import os
 import unittest
 import pandas as pd
-from csv_to_sql.csv_to_sql import CSVtoSQL
+from backend.csv_to_sql import CSVtoSQL
 from sqlalchemy import text
 
 class TestCSVtoSQL(unittest.TestCase):

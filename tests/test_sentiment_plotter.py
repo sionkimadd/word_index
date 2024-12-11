@@ -3,13 +3,13 @@ python -m unittest tests/test_sentiment_plotter.py
 """
 import os
 import unittest
-from sentiment_plotter.sentiment_plotter import SentimentPlotter
+from backend.sentiment_plotter import SentimentPlotter
 
 class TestSentimentPlotter(unittest.TestCase):
 
     def tearDown(self):
-        if os.path.exists("png/sentiment_plot_kimsion.png"):
-            os.remove("png/sentiment_plot_kimsion.png")
+        if os.path.exists("static/png/sentiment_plot_kimsion.png"):
+            os.remove("static/png/sentiment_plot_kimsion.png")
 
     def test_init_valid(self):
         sentiment_plotter = SentimentPlotter("kimsion_sentiment.csv")
@@ -21,5 +21,5 @@ class TestSentimentPlotter(unittest.TestCase):
 
     def test_plot_sentiment(self):
         self.sentiment_plotter.plot_sentiment("kimsion")
-        plot_filepath = "png/sentiment_plot_kimsion.png"
+        plot_filepath = "static/png/sentiment_plot_kimsion.png"
         self.assertTrue(os.path.exists(plot_filepath))

@@ -27,7 +27,7 @@ class SentimentPlotter:
         plt.grid(True)
         plt.xticks(rotation=60, fontsize=7)
         
-        png_dir = "png/"
+        png_dir = "static/png/"
         if not os.path.exists(png_dir):
             os.makedirs(png_dir)
     

@@ -3,7 +3,7 @@ python -m unittest tests/test_sql_to_csv.py
 """
 import unittest
 import pandas as pd
-from sql_to_csv.sql_to_csv import SQLtoCSV
+from backend.sql_to_csv import SQLtoCSV
 
 class TestSQLtoCSV(unittest.TestCase):
 

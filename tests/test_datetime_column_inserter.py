@@ -3,7 +3,7 @@ python -m unittest tests/test_datetime_column_inserter.py
 """
 import unittest
 import pandas as pd
-from datetime_column_inserter.datetime_column_inserter import datetimeColInserter
+from backend.datetime_column_inserter import datetimeColInserter
 
 class TestdatetimeColInserter(unittest.TestCase):
 

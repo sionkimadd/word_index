@@ -3,7 +3,7 @@ python -m unittest tests/test_sentiment_analyzer.py
 """
 import unittest
 import pandas as pd
-from sentiment_analyzer.sentiment_analyzer import SentimentAnalysis
+from backend.sentiment_analyzer import SentimentAnalysis
 
 class TestSentimentAnalysis(unittest.TestCase):
 

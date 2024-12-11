@@ -3,7 +3,7 @@ python -m unittest tests/test_sort_csv.py
 """
 import unittest
 import pandas as pd
-from sort_csv.sort_csv import sortCSV
+from backend.sort_csv import sortCSV
 
 class TestsortCSV(unittest.TestCase):
 

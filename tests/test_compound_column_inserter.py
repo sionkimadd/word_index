@@ -3,7 +3,7 @@ python -m unittest tests/test_compound_column_inserter.py
 """
 import unittest
 import pandas as pd
-from compound_column_inserter.compound_column_inserter import compoundColInserter
+from backend.compound_column_inserter import compoundColInserter
 
 class TestcompoundColInserter(unittest.TestCase):
 

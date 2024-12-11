@@ -2,7 +2,7 @@
 python -m unittest tests/test_google_news_fetcher.py
 """
 import unittest
-from google_news_fetcher.google_news_fetcher import GoogleNewsFetcher
+from backend.google_news_fetcher import GoogleNewsFetcher
 from datetime import datetime, timedelta
 import pandas as pd
 import os
