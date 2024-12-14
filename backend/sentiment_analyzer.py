@@ -12,6 +12,8 @@ class SentimentAnalysis:
 
         df = pd.read_csv(self.__output_sql_csv)
 
+        df['title'] = df['title'].fillna("")
+
         sentiment_results = []
 
         for title in df['title']:

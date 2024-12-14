@@ -9,9 +9,10 @@
 3. Load data from Database (O)
 4. Analyze news (O)
 5. Plot graph (O)
-6. Deploy ( )
+6. Flask (O)
+7. Deploy ( )
 
-## Implementation Details
+## Implementation Details (Backend)
 
 ### GoogleNewsFetcher (Class)
 
@@ -346,6 +347,8 @@ def analyze_sentiment(self):
 
     df = pd.read_csv(self.__output_sql_csv)
 
+    df['title'] = df['title'].fillna("")
+
     sentiment_results = []
 
     for title in df['title']:
@@ -365,6 +368,7 @@ def analyze_sentiment(self):
 ```
 
 - `df = pd.read_csv(self.__output_sql_csv)` read the existing CSV file into a Pandas DataFrame.
+- `df['title'] = df['title'].fillna("")` convert `NaN` to `""`.
 - `sentiment_results = []` initialize with empty `list` that is for sentiment results.
 - `for title in df['title']:` literate `title` from DataFrame.
 - `sentiment_scores = self.analyzer.polarity_scores(title)` analyze sentiment.

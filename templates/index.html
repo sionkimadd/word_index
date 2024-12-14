@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="static/styles/index.css" />
+    <title>Wor(l)d Index</title>
+</head>
+<body>
+    
+    <header>
+        <h1>Wor(l)d Index</h1>
+    </header>
+    
+    <main>
+        <label for="queryInput">Query</label>
+        <input id="queryInput" type="text">
+
+        <label for="intervalInput">Interval</label>
+        <select id="intervalInput">
+            <option value="Interval" disabled selected>-</option>
+            <option value="1">-1d</option>
+            <option value="2">-2d</option>
+            <option value="3">-3d</option>
+            <option value="4">-4d</option>
+            <option value="5">-5d</option>
+            <option value="6">-6d</option>
+            <option value="7">-7d</option>
+        </select>
+
+        <button id="analyzeButton">Analyze</button>
+
+        <h2>Generated Files</h2>
+        <ul id="files_ul"></ul>
+
+        <h2>Sentiment Analysis Plot</h2>
+        <img id="sentiment_plot" class="hidden" alt="Sentiment Analysis Plot">
+    </main>
+    
+    <script>
+        document.getElementById("analyzeButton").addEventListener("click", () => {
+            const query = document.getElementById("queryInput").value.trim().toLowerCase();
+            const interval = parseInt(document.getElementById("intervalInput").value);
+
+            if (!query && isNaN(interval)) {
+                alert("Query && Interval");
+                return;
+            } else if (!query) {
+                alert("Query");
+                return;
+            } else if (isNaN(interval)) {
+                alert("Interval");
+                return;
+            }
+            
+            const button = document.getElementById("analyzeButton");
+            button.disabled = true;
+
+            fetch("/analyze", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query: query, interval: interval }),
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Failure");
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    const filesUl = document.getElementById("files_ul");
+                    filesUl.innerHTML = "";
+
+                    for (const generated_file of data.generated_files) {
+                        const fileLi = document.createElement("li");
+                        const liA = document.createElement("a");
+                        liA.href = `/generated_files/${generated_file}`;
+                        liA.innerText = generated_file;
+                        fileLi.appendChild(liA);
+                        filesUl.appendChild(fileLi);
+                    }
+
+                    const sentimentPlot = document.getElementById("sentiment_plot");
+                    const ts = new Date().getTime();
+                    sentimentPlot.src = `${data.sentiment_plot_path}?renew=${ts}`;
+                    sentimentPlot.classList.remove("hidden");
+                })
+                .catch(error => {
+                    alert(`Error: ${error.message}`);
+                })
+                .finally(() => {
+                    button.disabled = false;
+                });
+        });
+    </script>
+</body>
+</html>
