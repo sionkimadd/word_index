@@ -1,44 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="static/styles/index.css" />
     <title>Wor(l)d Index</title>
 </head>
 <body>
     
-    <header>
-        <h1>Wor(l)d Index</h1>
-    </header>
-    
-    <main>
-        <label for="queryInput">Query</label>
-        <input id="queryInput" type="text">
+    <div class="tabs">
+        <div class="tab insert active">Insert</div>
+        <div class="tab files">Files</div>
+        <div class="tab plot">Plot</div>
+    </div>
 
-        <label for="intervalInput">Interval</label>
-        <select id="intervalInput">
-            <option value="Interval" disabled selected>-</option>
-            <option value="1">-1d</option>
-            <option value="2">-2d</option>
-            <option value="3">-3d</option>
-            <option value="4">-4d</option>
-            <option value="5">-5d</option>
-            <option value="6">-6d</option>
-            <option value="7">-7d</option>
-        </select>
+    <div class="container">
+        <section class="content active">    
+            <header>
+                <h1>Wor(l)d Index</h1>
+            </header>
+            
+            <main>
+                <input id="queryInput" placeholder="Query" type="text">
+                
+                <div id="intervalInput" class="interval-buttons">
+                    <button class="interval-button 1" data-value="1">-1d</button>
+                    <button class="interval-button 2" data-value="2">-2d</button>
+                    <button class="interval-button 3" data-value="3">-3d</button>
+                    <button class="interval-button 4" data-value="4">-4d</button>
+                    <button class="interval-button 5" data-value="5">-5d</button>
+                    <button class="interval-button 6" data-value="6">-6d</button>
+                    <button class="interval-button 7" data-value="7">-7d</button>
+                </div>
+                
+            </main>
+        </section>
 
-        <button id="analyzeButton">Analyze</button>
+        <section class="content">
+            <h2 id="files_header">Generated Files</h2>
+            <ul id="files_ul"></ul>
+        </section>
 
-        <h2>Generated Files</h2>
-        <ul id="files_ul"></ul>
+        <section class="content">
+            <h2 id="plot_header">Sentiment Analysis Plot</h2>
+            <img id="sentiment_plot" class="hidden" alt="Sentiment Analysis Plot">
+        </section>
+    </div>  
 
-        <h2>Sentiment Analysis Plot</h2>
-        <img id="sentiment_plot" class="hidden" alt="Sentiment Analysis Plot">
-    </main>
-    
+    <button id="analyzeButton">Analyze</button>
+
     <script>
+        const tabs = Array.from(document.getElementsByClassName("tab"));
+        const contents = Array.from(document.getElementsByClassName("content"));
+
+        tabs.forEach((tab, index) => {
+            tab.addEventListener("click", () => {
+                tabs.forEach((tabElement) => tabElement.classList.remove("active"));
+                contents.forEach((contentElement) => contentElement.classList.remove("active"));
+                tab.classList.add("active");
+                contents[index].classList.add("active");
+            });
+        });
+
+        const intervalButtons = Array.from(document.getElementsByClassName("interval-button"));
+        let selectedValue = null;
+
+        intervalButtons.forEach((intervalButton) => {
+            intervalButton.addEventListener("click", () => {
+                intervalButtons.forEach((btnElement) => btnElement.classList.remove("active"));
+                intervalButton.classList.add("active");
+                selectedValue = intervalButton.dataset.value;
+            });
+        });
+
         document.getElementById("analyzeButton").addEventListener("click", () => {
             const query = document.getElementById("queryInput").value.trim().toLowerCase();
-            const interval = parseInt(document.getElementById("intervalInput").value);
+            const interval = parseInt(selectedValue);
 
             if (!query && isNaN(interval)) {
                 alert("Query && Interval");
@@ -51,8 +89,8 @@
                 return;
             }
             
-            const button = document.getElementById("analyzeButton");
-            button.disabled = true;
+            const analyzeButton = document.getElementById("analyzeButton");
+            analyzeButton.disabled = true;
 
             fetch("/analyze", {
                 method: "POST",
@@ -67,6 +105,11 @@
                     if (data.error) {
                         throw new Error(data.error);
                     }
+
+                    const filesH = document.getElementById("files_header");
+                    const plotH = document.getElementById("plot_header");
+                    filesH.classList.add("hidden");
+                    plotH.classList.add("hidden");
 
                     const filesUl = document.getElementById("files_ul");
                     filesUl.innerHTML = "";
@@ -89,7 +132,8 @@
                     alert(`Error: ${error.message}`);
                 })
                 .finally(() => {
-                    button.disabled = false;
+                    analyzeButton.disabled = false;
+                    alert("Fin");
                 });
         });
     </script>
